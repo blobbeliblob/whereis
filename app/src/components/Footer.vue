@@ -1,6 +1,4 @@
 <script setup>
-  import { ref } from 'vue'
-
   const currentYear = new Date().getFullYear()
 </script>
 
@@ -18,5 +16,6 @@
         width: 100%;
         background: #F5F2E8;
         color: #1A1A18;
+        font-size: 0.8rem;
     }
 </style>
