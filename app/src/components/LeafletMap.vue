@@ -2,6 +2,7 @@
   import { onBeforeUnmount, onMounted, ref } from 'vue'
   import L from 'leaflet'
   import 'leaflet/dist/leaflet.css'
+  import worldCities from '../assets/worldcities.json'
 
   const mapElement = ref(null);
   const targetLocation = ref('');
@@ -9,7 +10,12 @@
   let pointsRound = ref(0);
   let distanceRound = ref(0);
   let isGuessing = ref(true);
+  let targetCity = ref(null);
   let map;
+
+  function getRandomCity() {
+    return worldCities[Math.floor(Math.random() * worldCities.length)];
+  }
 
   onMounted(() => {
     // map setup
@@ -27,7 +33,7 @@
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors',
-      minZoom: 2,
+      minZoom: 3,
       maxZoom: 10,
     }).addTo(map)
     
@@ -46,13 +52,14 @@
       makeGuessButtonText.value = 'Check Guess';
     });
 
-    targetLocation.value = 'Kölner Dom';
+    targetCity.value = getRandomCity();
+    targetLocation.value = `${targetCity.value.city}`;
 
     makeGuessButton.addEventListener('click', () => {
       if (isGuessing) {
         if (currentGuessMarker && targetLocation.value) {
           const guessCoordinates = currentGuessMarker.getLatLng();
-          const targetCoordinates = L.latLng(50.941357, 6.958307);
+          const targetCoordinates = L.latLng(targetCity.value.lat, targetCity.value.lng);
           const distance = map.distance(guessCoordinates, targetCoordinates);
           
           const thresholdDistance = 2500000; // in meters
@@ -88,6 +95,8 @@
           pathBetweenMarkers.remove();
           pathBetweenMarkers = null;
         }
+        targetCity.value = getRandomCity();
+        targetLocation.value = `${targetCity.value.city}`;
         isGuessing = !isGuessing;
         makeGuessButtonText.value = 'Place Guess';
       }
@@ -122,7 +131,7 @@
   }
 
   .map {
-    height: 87vh;
+    height: 89vh;
     width: 100%;
     border: 2px solid #1A1A18;
     border-radius: 8px;
@@ -135,8 +144,8 @@
     padding: 0.5rem 1rem;
     z-index: 1000;
     position: fixed;
-    top: 8rem;
-    font-size: 1rem;
+    top: 6rem;
+    font-size: 1.2rem;
     background-color: #1A1A18;
     color: #F5F2E8;
     border: 1px solid #F5F2E8;
