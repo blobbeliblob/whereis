@@ -66,7 +66,16 @@
 
     updatePopulationThreshold();
 
-    const markerIcon = L.icon({
+    const markerIconGuess = L.icon({
+      iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+      shadowSize: [41, 41]
+    });
+
+    const markerIconTarget = L.icon({
       iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
       iconSize: [25, 41],
       iconAnchor: [12, 41],
@@ -86,7 +95,7 @@
       if (currentGuessMarker) {
         currentGuessMarker.remove();
       }
-      currentGuessMarker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map);
+      currentGuessMarker = L.marker([e.latlng.lat, e.latlng.lng], { icon: markerIconGuess }).addTo(map);
       makeGuessButtonText.value = 'Check Guess';
     });
 
@@ -112,7 +121,7 @@
           distanceRound.value = (distance > 1000 ? (distance / 1000).toFixed(distance > 10000 ? 0 : 2).toString() + ' km' : Math.round(distance).toString() + ' m');
 
           // draw target marker and line between guess and target
-          currentTargetMarker = L.marker(targetCoordinates).addTo(map);
+          currentTargetMarker = L.marker(targetCoordinates, { icon: markerIconTarget }).addTo(map);
           pathBetweenMarkers = L.polyline([guessCoordinates, targetCoordinates], { color: '#C8302A', weight: 2, dashArray: '8, 8' }).addTo(map);
           
           isGuessing = !isGuessing;
