@@ -31,12 +31,6 @@
   onMounted(() => {
     // map setup
 
-    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors',
-      minZoom: 3,
-      maxZoom: 10,
-    });
-
     var osmHOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
       minZoom: 3,
       maxZoom: 10,
@@ -50,13 +44,6 @@
       format: 'image/jpeg',
       style: 'normal'
     });
-
-    var Stadia_StamenWatercolor = L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.{ext}', {
-      minZoom: 3,
-      maxZoom: 10,
-      attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://www.stamen.com/" target="_blank">Stamen Design</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      ext: 'jpg'
-    });
     
     map = L.map(mapElement.value, {
       center: [0, 0], 
@@ -67,7 +54,7 @@
         [90, Infinity]
       ], 
       maxBoundsViscosity: 1.0,
-      layers: [Stadia_StamenWatercolor]
+      layers: [GeoportailFrance_orthos]
     });
 
     var baseMaps = {
