@@ -8,7 +8,7 @@
   const targetLocation = ref('');
   const makeGuessButtonText = ref('Place Guess');
   const populationThresholds = [100000, 250000, 500000, 1000000, 2500000, 5000000, 10000000];
-  let populationThresholdIndex = ref(0);
+  let populationThresholdIndex = ref(6);
   let pointsRound = ref(0);
   let distanceRound = ref(0);
   let isGuessing = ref(true);
@@ -31,6 +31,33 @@
   onMounted(() => {
     // map setup
 
+    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors',
+      minZoom: 3,
+      maxZoom: 10,
+    });
+
+    var osmHOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+      minZoom: 3,
+      maxZoom: 10,
+    attribution: '© OpenStreetMap contributors, Tiles style by Humanitarian OpenStreetMap Team hosted by OpenStreetMap France'});
+
+    var GeoportailFrance_orthos = L.tileLayer('https://data.geopf.fr/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE={style}&TILEMATRIXSET=PM&FORMAT={format}&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}', {
+      attribution: '<a target="_blank" href="https://www.geoportail.gouv.fr/">Geoportail France</a>',
+      bounds: [[-75, -180], [81, 180]],
+      minZoom: 3,
+      maxZoom: 10,
+      format: 'image/jpeg',
+      style: 'normal'
+    });
+
+    var Stadia_StamenWatercolor = L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.{ext}', {
+      minZoom: 3,
+      maxZoom: 10,
+      attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://www.stamen.com/" target="_blank">Stamen Design</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      ext: 'jpg'
+    });
+    
     map = L.map(mapElement.value, {
       center: [0, 0], 
       zoom: 3,
@@ -40,13 +67,17 @@
         [90, Infinity]
       ], 
       maxBoundsViscosity: 1.0,
+      layers: [Stadia_StamenWatercolor]
     });
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors',
-      minZoom: 3,
-      maxZoom: 10,
-    }).addTo(map)
+    var baseMaps = {
+      "OpenStreetMap": osm,
+      "OpenStreetMap HOT": osmHOT,
+      "Geoportail France": GeoportailFrance_orthos,
+      "Stadia Stamen Watercolor": Stadia_StamenWatercolor
+    };
+
+    var layerControl = L.control.layers(baseMaps).addTo(map);
 
     updatePopulationThreshold();
     
