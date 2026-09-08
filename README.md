@@ -1,2 +1,3 @@
-# GIS-tests
- Assortment of GIS tests
+# whereis
+
+Small game made with Leaflet.

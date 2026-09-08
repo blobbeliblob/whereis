@@ -7,14 +7,25 @@
   const mapElement = ref(null);
   const targetLocation = ref('');
   const makeGuessButtonText = ref('Place Guess');
+  const populationThresholds = [100000, 250000, 500000, 1000000, 2500000, 5000000, 10000000];
+  let populationThresholdIndex = ref(0);
   let pointsRound = ref(0);
   let distanceRound = ref(0);
   let isGuessing = ref(true);
   let targetCity = ref(null);
-  let map;
+  let map;;
+  let filteredCities = [];
+
+  function filterCitiesByPopulation(populationThreshold) {
+    return worldCities.filter(city => city.population > populationThreshold);
+  }
+
+  function updatePopulationThreshold() {
+    filteredCities = filterCitiesByPopulation(populationThresholds[populationThresholdIndex.value]);
+  }
 
   function getRandomCity() {
-    return worldCities[Math.floor(Math.random() * worldCities.length)];
+    return filteredCities[Math.floor(Math.random() * filteredCities.length)];
   }
 
   onMounted(() => {
@@ -36,6 +47,8 @@
       minZoom: 3,
       maxZoom: 10,
     }).addTo(map)
+
+    updatePopulationThreshold();
     
     // game logic
 
@@ -118,6 +131,26 @@
       <p><span id="distanceRound">{{ distanceRound }}</span> away.</p>
     </div>
     <button ref="makeGuessButton" id="makeGuessButton">{{ makeGuessButtonText }}</button>
+    <label id="populationThresholdLabel" for="populationThreshold">
+      > {{ populationThresholds[populationThresholdIndex].toLocaleString() }} pop.
+    </label>
+    <input
+      id="populationThreshold"
+      v-model.number="populationThresholdIndex"
+      type="range"
+      min="0"
+      max="6"
+      step="1"
+      list="populationThresholdValues"
+      aria-label="Minimum city population"
+      @input="updatePopulationThreshold"
+    />
+    <datalist id="populationThresholdValues">
+      <option v-for="(threshold, index) in populationThresholds" :key="threshold" :value="index">
+        {{ threshold.toLocaleString() }}
+      </option>
+    </datalist>
+  
   </div>
 </template>
 
@@ -131,7 +164,7 @@
   }
 
   .map {
-    height: 89vh;
+    height: 85vh;
     width: 100%;
     border: 2px solid #1A1A18;
     border-radius: 8px;
@@ -144,8 +177,8 @@
     padding: 0.5rem 1rem;
     z-index: 1000;
     position: fixed;
-    top: 6rem;
-    font-size: 1.2rem;
+    top: 5rem;
+    font-size: 1.4rem;
     background-color: #1A1A18;
     color: #F5F2E8;
     border: 1px solid #F5F2E8;
@@ -172,12 +205,33 @@
     padding: 0.5rem 1rem;
     z-index: 1000;
     position: fixed;
-    bottom: 5rem;
+    bottom: 10vh;
     font-size: 1rem;
     background-color: #1A1A18;
     color: #F5F2E8;
     border: 1px solid #F5F2E8;
     border-radius: 4px;
+    cursor: pointer;
+  }
+
+  #populationThresholdLabel,
+  #populationThreshold {
+    position: fixed;
+    top: 2.2rem;
+    right: 2rem;
+    z-index: 1000;
+  }
+
+  #populationThresholdLabel {
+    top: 1.5rem;
+    right: 2.6rem;
+    font-size: 0.8rem;
+    color: #1A1A18;
+  }
+
+  #populationThreshold {
+    width: 8rem;
+    accent-color: #1A1A18;
     cursor: pointer;
   }
 </style>

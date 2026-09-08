@@ -19,6 +19,8 @@
   }
 
   body {
+    min-width: 370px;
+    min-height: 400px;
     margin: 0;
   }
 
