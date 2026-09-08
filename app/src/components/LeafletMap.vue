@@ -58,15 +58,22 @@
     });
 
     var baseMaps = {
-      "OpenStreetMap": osm,
       "OpenStreetMap HOT": osmHOT,
       "Geoportail France": GeoportailFrance_orthos,
-      "Stadia Stamen Watercolor": Stadia_StamenWatercolor
     };
 
     var layerControl = L.control.layers(baseMaps).addTo(map);
 
     updatePopulationThreshold();
+
+    const markerIcon = L.icon({
+      iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+      shadowSize: [41, 41]
+    });
     
     // game logic
 
