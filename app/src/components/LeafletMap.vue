@@ -161,8 +161,8 @@
     <div ref="mapElement" class="map" aria-label="Interactive Map"></div>
     <div id="targetLocation">{{ targetLocation }}</div>
     <div id="resultsBox" v-show="!isGuessing">
-      <p><span id="pointsRound">{{ pointsRound }}</span> Points!</p>
-      <p><span id="distanceRound">{{ distanceRound }}</span> away.</p>
+      <p>You got <span id="pointsRound">{{ pointsRound }}</span> points,</p>
+      <p>and were <span id="distanceRound">{{ distanceRound }}</span> away!</p>
     </div>
     <button ref="makeGuessButton" id="makeGuessButton">{{ makeGuessButtonText }}</button>
     <label id="populationThresholdLabel" for="populationThreshold">
@@ -213,9 +213,11 @@
     position: fixed;
     top: 5rem;
     font-size: 1.4rem;
-    background-color: #1A1A18;
-    color: #F5F2E8;
-    border: 1px solid #F5F2E8;
+    text-transform: uppercase;
+    font-weight: bold;
+    background-color: #F5F2E8;
+    color: #1A1A18;
+    border: 1px solid #1A1A18;
     border-radius: 4px;
   }
 
@@ -228,10 +230,21 @@
     padding: 0.5rem 1rem;
     z-index: 1000;
     font-size: 1rem;
-    background-color: #1A1A18;
-    color: #F5F2E8;
-    border: 1px solid #F5F2E8;
+    background-color: #F5F2E8;
+    color: #1A1A18;
+    border: 1px solid #1A1A18;
     border-radius: 4px;
+  }
+
+  #pointsRound {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #C8302A;
+  }
+
+  #distanceRound {
+    font-weight: bold;
+    color: #1E3878;
   }
 
   #makeGuessButton {
@@ -241,11 +254,16 @@
     position: fixed;
     bottom: 10vh;
     font-size: 1rem;
-    background-color: #1A1A18;
-    color: #F5F2E8;
-    border: 1px solid #F5F2E8;
+    background-color: #F5F2E8;
+    color: #1A1A18;
+    border: 1px solid #1A1A18;
     border-radius: 4px;
     cursor: pointer;
+  }
+
+  #makeGuessButton:hover {
+    background-color: #1A1A18;
+    color: #F5F2E8;
   }
 
   #populationThresholdLabel,

@@ -22,6 +22,12 @@
     min-width: 370px;
     min-height: 400px;
     margin: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html, body {
+    height: 100%;
+    width: 100vw;
   }
 
   .app {
