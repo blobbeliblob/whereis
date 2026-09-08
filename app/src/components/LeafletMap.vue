@@ -4,7 +4,11 @@
   import 'leaflet/dist/leaflet.css'
 
   const mapElement = ref(null);
-  const targetLocation = ref(null);
+  const targetLocation = ref('');
+  const makeGuessButtonText = ref('Place Guess');
+  let pointsRound = ref(0);
+  let distanceRound = ref(0);
+  let isGuessing = ref(true);
   let map;
 
   onMounted(() => {
@@ -29,8 +33,6 @@
     
     // game logic
 
-    let isGuessing = true;
-
     let currentGuessMarker = null;
     let currentTargetMarker = null;
     let pathBetweenMarkers = null;
@@ -41,9 +43,10 @@
         currentGuessMarker.remove();
       }
       currentGuessMarker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map);
+      makeGuessButtonText.value = 'Check Guess';
     });
 
-    targetLocation.value = "Kölner Dom";
+    targetLocation.value = 'Kölner Dom';
 
     makeGuessButton.addEventListener('click', () => {
       if (isGuessing) {
@@ -52,12 +55,23 @@
           const targetCoordinates = L.latLng(50.941357, 6.958307);
           const distance = map.distance(guessCoordinates, targetCoordinates);
           
+          const thresholdDistance = 2500000; // in meters
+          const allowedError = 5000; // in meters
+          const scoringDistance = Math.min(thresholdDistance, Math.max(allowedError, distance));
+          const logarithmicPenalty =
+            Math.log10(scoringDistance / allowedError) / Math.log10(thresholdDistance / allowedError);
+          const points = Math.round(
+            5000 * (1 - logarithmicPenalty ** 2),
+          );
+          pointsRound.value = points;
+          distanceRound.value = (distance > 1000 ? (distance / 1000).toFixed(distance > 10000 ? 0 : 2).toString() + ' km' : Math.round(distance).toString() + ' m');
 
           // draw target marker and line between guess and target
           currentTargetMarker = L.marker(targetCoordinates).addTo(map);
           pathBetweenMarkers = L.polyline([guessCoordinates, targetCoordinates], { color: '#C8302A', weight: 2, dashArray: '8, 8' }).addTo(map);
           
           isGuessing = !isGuessing;
+          makeGuessButtonText.value = 'Next Round';
         } else {
           // do something
         }
@@ -75,6 +89,7 @@
           pathBetweenMarkers = null;
         }
         isGuessing = !isGuessing;
+        makeGuessButtonText.value = 'Place Guess';
       }
     });
 
@@ -88,14 +103,12 @@
 <template>
   <div id="mainContent">
     <div ref="mapElement" class="map" aria-label="Interactive Map"></div>
-    <div ref="targetLocation" id="targetLocation"></div>
-    <div ref="resultsBox" id="resultsBox">
-      <div ref="resultsSummary" id="resultsSummary">
-        <p><span ref="pointsRound" id="pointsRound"></span> Points!</p>
-        <p><span ref="distanceRound" id="distanceRound"></span> meters away.</p>
-      </div>
+    <div id="targetLocation">{{ targetLocation }}</div>
+    <div id="resultsBox" v-show="!isGuessing">
+      <p><span id="pointsRound">{{ pointsRound }}</span> Points!</p>
+      <p><span id="distanceRound">{{ distanceRound }}</span> away.</p>
     </div>
-    <button ref="makeGuessButton" id="makeGuessButton">Check Guess</button>
+    <button ref="makeGuessButton" id="makeGuessButton">{{ makeGuessButtonText }}</button>
   </div>
 </template>
 
@@ -114,6 +127,7 @@
     border: 2px solid #1A1A18;
     border-radius: 8px;
     overflow: hidden;
+    cursor: crosshair;
   }
 
   #targetLocation {
