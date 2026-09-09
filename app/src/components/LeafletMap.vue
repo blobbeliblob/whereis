@@ -31,18 +31,18 @@
   onMounted(() => {
     // map setup
 
-    var osmHOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-      minZoom: 3,
-      maxZoom: 10,
-    attribution: '© OpenStreetMap contributors, Tiles style by Humanitarian OpenStreetMap Team hosted by OpenStreetMap France'});
-
-    var GeoportailFrance_orthos = L.tileLayer('https://data.geopf.fr/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE={style}&TILEMATRIXSET=PM&FORMAT={format}&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}', {
-      attribution: '<a target="_blank" href="https://www.geoportail.gouv.fr/">Geoportail France</a>',
-      bounds: [[-75, -180], [81, 180]],
-      minZoom: 3,
-      maxZoom: 10,
-      format: 'image/jpeg',
-      style: 'normal'
+    // more basemaps can be found at https://leaflet-extras.github.io/leaflet-providers/preview/
+    var Stadia_StamenTonerBackground = L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_toner_background/{z}/{x}/{y}{r}.{ext}', {
+      minZoom: 0,
+      maxZoom: 20,
+      attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://www.stamen.com/" target="_blank">Stamen Design</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      ext: 'png'
+    });
+    var Stadia_StamenWatercolor = L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.{ext}', {
+      minZoom: 1,
+      maxZoom: 16,
+      attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://www.stamen.com/" target="_blank">Stamen Design</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      ext: 'jpg'
     });
     
     map = L.map(mapElement.value, {
@@ -54,12 +54,12 @@
         [90, Infinity]
       ], 
       maxBoundsViscosity: 1.0,
-      layers: [GeoportailFrance_orthos]
+      layers: [Stadia_StamenTonerBackground]
     });
 
     var baseMaps = {
-      "OpenStreetMap HOT": osmHOT,
-      "Geoportail France": GeoportailFrance_orthos,
+      "Stadia Toner": Stadia_StamenTonerBackground,
+      "Stadia Watercolor": Stadia_StamenWatercolor,
     };
 
     var layerControl = L.control.layers(baseMaps).addTo(map);
