@@ -7,6 +7,7 @@
   const mapElement = ref(null);
   const targetLocation = ref('');
   const makeGuessButtonText = ref('Place Guess');
+  const maxPointsPerRound = ref(100); // maximum points for a perfect guess
   const populationThresholds = [100000, 250000, 500000, 1000000, 2500000, 5000000, 10000000];
   let populationThresholdIndex = ref(6);
   let pointsRound = ref(0);
@@ -33,14 +34,14 @@
 
     // more basemaps can be found at https://leaflet-extras.github.io/leaflet-providers/preview/
     var Stadia_StamenTonerBackground = L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_toner_background/{z}/{x}/{y}{r}.{ext}', {
-      minZoom: 0,
-      maxZoom: 20,
+      minZoom: 3,
+      maxZoom: 12,
       attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://www.stamen.com/" target="_blank">Stamen Design</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       ext: 'png'
     });
     var Stadia_StamenWatercolor = L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.{ext}', {
-      minZoom: 1,
-      maxZoom: 16,
+      minZoom: 3,
+      maxZoom: 12,
       attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://www.stamen.com/" target="_blank">Stamen Design</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       ext: 'jpg'
     });
@@ -54,7 +55,7 @@
         [90, Infinity]
       ], 
       maxBoundsViscosity: 1.0,
-      layers: [Stadia_StamenTonerBackground]
+      layers: [Stadia_StamenWatercolor]
     });
 
     var baseMaps = {
@@ -115,7 +116,7 @@
           const logarithmicPenalty =
             Math.log10(scoringDistance / allowedError) / Math.log10(thresholdDistance / allowedError);
           const points = Math.round(
-            5000 * (1 - logarithmicPenalty ** 2),
+            maxPointsPerRound.value * (1 - logarithmicPenalty ** 2),
           );
           pointsRound.value = points;
           distanceRound.value = (distance > 1000 ? (distance / 1000).toFixed(distance > 10000 ? 0 : 2).toString() + ' km' : Math.round(distance).toString() + ' m');
@@ -161,7 +162,7 @@
     <div ref="mapElement" class="map" aria-label="Interactive Map"></div>
     <div id="targetLocation">{{ targetLocation }}</div>
     <div id="resultsBox" v-show="!isGuessing">
-      <p>You got <span id="pointsRound">{{ pointsRound }}</span> points,</p>
+      <p>You got <span id="pointsRound">{{ pointsRound }}</span> / <span id="maxPointsPerRound">{{ maxPointsPerRound }}</span> points,</p>
       <p>and were <span id="distanceRound">{{ distanceRound }}</span> away!</p>
     </div>
     <button ref="makeGuessButton" id="makeGuessButton">{{ makeGuessButtonText }}</button>
@@ -200,7 +201,7 @@
   .map {
     height: 85vh;
     width: 100%;
-    border: 2px solid #1A1A18;
+    border: 2px solid var(--color-primary);
     border-radius: 8px;
     overflow: hidden;
     cursor: crosshair;
@@ -215,10 +216,11 @@
     font-size: 1.4rem;
     text-transform: uppercase;
     font-weight: bold;
-    background-color: #F5F2E8;
-    color: #1A1A18;
-    border: 1px solid #1A1A18;
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+    border: 2px solid var(--color-primary);
     border-radius: 4px;
+    box-shadow: var(--shadow);
   }
 
   #resultsBox {
@@ -230,21 +232,22 @@
     padding: 0.5rem 1rem;
     z-index: 1000;
     font-size: 1rem;
-    background-color: #F5F2E8;
-    color: #1A1A18;
-    border: 1px solid #1A1A18;
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+    border: 2px solid var(--color-primary);
     border-radius: 4px;
+    box-shadow: var(--shadow);
   }
 
   #pointsRound {
     font-size: 1.2rem;
     font-weight: bold;
-    color: #C8302A;
+    color: var(--bauhaus-red);
   }
 
   #distanceRound {
     font-weight: bold;
-    color: #1E3878;
+    color: var(--bauhaus-blue);
   }
 
   #makeGuessButton {
@@ -254,16 +257,16 @@
     position: fixed;
     bottom: 10vh;
     font-size: 1rem;
-    background-color: #F5F2E8;
-    color: #1A1A18;
-    border: 1px solid #1A1A18;
+    background-color: var(--color-accent);
+    color: var(--color-primary);
+    border: 2px solid var(--color-primary);
     border-radius: 4px;
     cursor: pointer;
   }
 
   #makeGuessButton:hover {
-    background-color: #1A1A18;
-    color: #F5F2E8;
+    background-color: var(--color-primary);
+    color: var(--color-accent);
   }
 
   #populationThresholdLabel,
@@ -278,12 +281,12 @@
     top: 1.5rem;
     right: 2.6rem;
     font-size: 0.8rem;
-    color: #1A1A18;
+    color: var(--color-primary);
   }
 
   #populationThreshold {
     width: 8rem;
-    accent-color: #1A1A18;
+    accent-color: var(--color-primary);
     cursor: pointer;
   }
 </style>

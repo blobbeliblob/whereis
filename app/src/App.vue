@@ -13,9 +13,18 @@
 
 <style>
   :root {
-    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
-    color: #1A1A18;
-    background: #F5F2E8;
+    font-family: 'Satoshi', sans-serif;
+    --bauhaus-black: #1A1A18;
+    --bauhaus-white: #F5F2E8;
+    --bauhaus-red: #C8302A;
+    --bauhaus-blue: #1E3878;
+    --bauhaus-yellow: #E8C018;
+    --bauhaus-gold: #C89620;
+
+    --color-primary: var(--bauhaus-black);
+    --color-secondary: var(--bauhaus-white);
+    --color-accent: var(--bauhaus-yellow);
+    --shadow: 0.2rem -0.1rem rgba(var(--color-primary), 1);
   }
 
   body {
@@ -23,6 +32,8 @@
     min-height: 400px;
     margin: 0;
     -webkit-tap-highlight-color: transparent;
+    color: var(--color-primary);
+    background: var(--color-secondary);
   }
 
   html, body {
