@@ -54,13 +54,17 @@
       const targetCoordinates = L.latLng(targetCity.value.lat, targetCity.value.lng);
       const distance = map.distance(guessCoordinates, targetCoordinates);
 
-      const thresholdDistance = 2500000; // in meters
-      const allowedError = 5000; // in meters
+      // Scoring: full points within allowedError, zero beyond thresholdDistance,
+      // logarithmic falloff in between. A higher curveExponent keeps scores
+      // higher for mid-range guesses (more forgiving).
+      const thresholdDistance = 6000000; // in meters — 0 points beyond this
+      const allowedError = 25000; // in meters — full points within this
+      const curveExponent = 2.5;
       const scoringDistance = Math.min(thresholdDistance, Math.max(allowedError, distance));
       const logarithmicPenalty =
         Math.log10(scoringDistance / allowedError) / Math.log10(thresholdDistance / allowedError);
       const points = Math.round(
-        maxPointsPerRound.value * (1 - logarithmicPenalty ** 2),
+        maxPointsPerRound.value * (1 - logarithmicPenalty ** curveExponent),
       );
       pointsRound.value = points;
       distanceRound.value = (distance > 1000 ? (distance / 1000).toFixed(distance > 10000 ? 0 : 2).toString() + ' km' : Math.round(distance).toString() + ' m');
