@@ -5,52 +5,76 @@
 
 <template>
   <main class="app">
-    <h1>Where is?</h1>
-    <LeafletMap />
-    <Footer />
+    <LeafletMap>
+      <template #title>
+        <h1>Where<br />is?</h1>
+      </template>
+      <template #footer>
+        <Footer />
+      </template>
+    </LeafletMap>
   </main>
 </template>
 
 <style>
   :root {
-    font-family: 'Satoshi', sans-serif;
-    --bauhaus-black: #1A1A18;
-    --bauhaus-white: #F5F2E8;
-    --bauhaus-red: #C8302A;
-    --bauhaus-blue: #1E3878;
-    --bauhaus-yellow: #E8C018;
-    --bauhaus-gold: #C89620;
+    /* Swiss type: one neo-grotesk family, hierarchy through size and weight */
+    font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-feature-settings: 'ss01', 'cv11', 'tnum';
+    -webkit-font-smoothing: antialiased;
 
-    --color-primary: var(--bauhaus-black);
-    --color-secondary: var(--bauhaus-white);
-    --color-accent: var(--bauhaus-yellow);
-    --shadow: 0.2rem -0.1rem rgba(var(--color-primary), 1);
+    /* Neumorphic surface: everything sits on a single soft material */
+    --surface: #e4e6ea;
+    --surface-light: #ffffff;
+    --surface-dark: #a7adb8;
+    --ink: #121417;
+    --ink-muted: #6b717c;
+    --accent: #e2231a; /* the single Swiss red */
+
+    --radius-lg: 28px;
+    --radius-md: 18px;
+    --radius-sm: 12px;
+
+    --raise: 10px 10px 22px rgba(167, 173, 184, 0.65), -10px -10px 22px rgba(255, 255, 255, 0.9);
+    --raise-sm: 5px 5px 10px rgba(167, 173, 184, 0.6), -5px -5px 10px rgba(255, 255, 255, 0.9);
+    --inset: inset 7px 7px 14px rgba(167, 173, 184, 0.6), inset -7px -7px 14px rgba(255, 255, 255, 0.85);
+    --inset-sm: inset 3px 3px 6px rgba(167, 173, 184, 0.6), inset -3px -3px 6px rgba(255, 255, 255, 0.85);
+
+    --gap: clamp(1rem, 2.2vw, 1.75rem);
   }
 
-  body {
-    min-width: 370px;
-    min-height: 400px;
-    margin: 0;
-    -webkit-tap-highlight-color: transparent;
-    color: var(--color-primary);
-    background: var(--color-secondary);
+  *, *::before, *::after {
+    box-sizing: border-box;
   }
 
   html, body {
     height: 100%;
-    width: 100vw;
+    margin: 0;
+  }
+
+  body {
+    min-width: 360px;
+    min-height: 480px;
+    -webkit-tap-highlight-color: transparent;
+    color: var(--ink);
+    background: var(--surface);
   }
 
   .app {
-    padding: 1.5rem;
+    height: 100dvh;
+    padding: var(--gap);
   }
 
   h1 {
-    margin: 0 0 1rem 0;
-    font-size: 1.5rem;
+    margin: 0;
+    font-size: clamp(2rem, 4.2vw, 3.5rem);
+    font-weight: 800;
+    line-height: 0.92;
+    letter-spacing: -0.045em;
   }
 
   a {
+    color: inherit;
     text-decoration: none;
   }
 </style>
